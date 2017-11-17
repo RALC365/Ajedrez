@@ -26,6 +26,14 @@ public class Peon extends Piezas {
         }
     }
 
+    public String getFigura() {
+        return figura;
+    }
+
+    public void setFigura(String figura) {
+        this.figura = figura;
+    }
+
     @Override
     public String toString() {
         return figura;

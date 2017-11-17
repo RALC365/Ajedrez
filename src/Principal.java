@@ -1355,10 +1355,12 @@ public void botones() {
     private void imagen_entradaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_imagen_entradaActionPerformed
         // TODO add your handling code here:
         if (JOptionPane.showConfirmDialog(this, "¿Está seguro que deseas reiniciar la partida?") == 0) {
-            jPanel1.setVisible(false);
+            //jPanel1.setVisible(false);
+            this.setVisible(false);
             JOptionPane.showMessageDialog(this, "Nueva Partida");
-            tablerito();
-            jPanel1.setVisible(true);
+            //tablerito();
+            this.setVisible(true);
+            //jPanel1.setVisible(true);
         } else {
             JOptionPane.showMessageDialog(this, "Seguí jugando");
         }
