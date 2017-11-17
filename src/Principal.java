@@ -1,4 +1,4 @@
-   
+
 import java.awt.Button;
 import java.awt.Color;
 import java.awt.HeadlessException;
@@ -28,8 +28,8 @@ public class Principal extends javax.swing.JFrame {
     public int mov2;
     public boolean clic;//este me dice si una pieza tiene clic o no--true; está seleccionando, false--moverá pieza
     public int[] pieza_mover = new int[2];
-    public int [] rey_blanco = new int[2];
-    public int [] rey_negro = new int[2];
+    public int[] rey_blanco = new int[2];
+    public int[] rey_negro = new int[2];
 
     public JButton[][] getTablero() {
         return tablero;
@@ -157,12 +157,13 @@ public class Principal extends javax.swing.JFrame {
         tf_jugador2.setEditable(false);
         jPanel1.add(tf_jugador2, new org.netbeans.lib.awtextra.AbsoluteConstraints(443, 58, 70, -1));
 
+        imagen_entrada.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ohhhyea.png"))); // NOI18N
         imagen_entrada.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 imagen_entradaActionPerformed(evt);
             }
         });
-        jPanel1.add(imagen_entrada, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 40, 129, 60));
+        jPanel1.add(imagen_entrada, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 50, 70, 60));
 
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -688,6 +689,17 @@ public void botones() {
     }
 
     public void tablerito() {
+        tablero = new JButton[8][8];//Es un señuelo
+        tablero_principal = new Piezas[8][8];//aqui trabajeromos
+        pos = new int[16][16];
+        pieza_mover = new int[2];
+        rey_blanco = new int[2];
+        rey_negro = new int[2];
+        
+        
+        
+        
+        
         clic = true;
         turno1 = true;
         mov1 = 0;
@@ -849,7 +861,7 @@ public void botones() {
                             break;
                         default:
                             tablero[x][y].setBackground(Color.red);
-                           // turno1 = !turno1;
+                            // turno1 = !turno1;
                             JOptionPane.showMessageDialog(this, "La pieza que seleccionaste "
                                     + "no es tuya\nEscoge otra");
                             ban = 1;
@@ -871,14 +883,14 @@ public void botones() {
                     if (error == 0) {
                         JOptionPane.showMessageDialog(this, "La pieza que escogió no puede moverse\n"
                                 + "Escoja otra");
-                    }else{
-                        int seg = JOptionPane.showConfirmDialog(this, "Está seguro que desea mover esa pieza");
-                    if (seg != 0) {
-                        colorear();
-                        JOptionPane.showMessageDialog(this, "Escoja otra pieza");
                     } else {
-                        clic = !clic;
-                    }
+                        int seg = JOptionPane.showConfirmDialog(this, "Está seguro que desea mover esa pieza");
+                        if (seg != 0) {
+                            colorear();
+                            JOptionPane.showMessageDialog(this, "Escoja otra pieza");
+                        } else {
+                            clic = !clic;
+                        }
                     }
                 } else {
                     ban = 0;
@@ -896,68 +908,109 @@ public void botones() {
                 }
             }
             if (acceso) {
-              //  if (tablero_principal[x][y] == null) {
-                    if (tablero_principal[pieza_mover[0]][pieza_mover[1]] instanceof Peon) {
+                //  if (tablero_principal[x][y] == null) {
+                boolean perdio = false;
+                if (tablero_principal[x][y] != null) {
+                    if (tablero_principal[x][y] instanceof Rey) {
+                        perdio = true;
+                    }
+                }
+                if (tablero_principal[pieza_mover[0]][pieza_mover[1]] instanceof Peon) {
+                    if (x != 7 && x != 0) {
                         tablero_principal[x][y] = new Peon(turno1);
-                        
-                    }
-                    if (tablero_principal[pieza_mover[0]][pieza_mover[1]] instanceof Torres) {
-                        tablero_principal[x][y] = new Torres(turno1);
-                    }
-                    if (tablero_principal[pieza_mover[0]][pieza_mover[1]] instanceof Caballo) {
-                        tablero_principal[x][y] = new Caballo(turno1);
-                    }
-                    if (tablero_principal[pieza_mover[0]][pieza_mover[1]] instanceof Alfin) {
-                        tablero_principal[x][y] = new Alfin(turno1);
-                    }
-                    if (tablero_principal[pieza_mover[0]][pieza_mover[1]] instanceof Reina) {
-                        tablero_principal[x][y] = new Reina(turno1);
-                    }
-                    if (tablero_principal[pieza_mover[0]][pieza_mover[1]] instanceof Rey) {
-                        tablero_principal[x][y] = new Rey(turno1);
-                    }
-                //}
-                if (turno1) {
-                        mov1++;
                     } else {
-                        mov2++;
+                        String[] opciones = {
+                            "1.-Reina",
+                            "2-Torre",
+                            "3.-Alfil",
+                            "4.-Caballo",};
+                        int resp = Integer.parseInt(((String) JOptionPane.showInputDialog(this, "Seleccione una opción",
+                                "CAMBIO DE PIEZA", 1, null, opciones, opciones[0])).charAt(0)+"");
+                        switch (resp) {
+                            case 1:
+                                tablero_principal[x][y] = new Reina(turno1);
+                                break;
+                            case 2:
+                                tablero_principal[x][y] = new Torres(turno1);
+                                break;
+                            case 3:
+                                tablero_principal[x][y] = new Alfin(turno1);
+                                break;
+                            case 4:
+                                tablero_principal[x][y] = new Caballo(turno1);
+                                break;
+
+                        }
                     }
+
+                }
+                if (tablero_principal[pieza_mover[0]][pieza_mover[1]] instanceof Torres) {
+                    tablero_principal[x][y] = new Torres(turno1);
+                }
+                if (tablero_principal[pieza_mover[0]][pieza_mover[1]] instanceof Caballo) {
+                    tablero_principal[x][y] = new Caballo(turno1);
+                }
+                if (tablero_principal[pieza_mover[0]][pieza_mover[1]] instanceof Alfin) {
+                    tablero_principal[x][y] = new Alfin(turno1);
+                }
+                if (tablero_principal[pieza_mover[0]][pieza_mover[1]] instanceof Reina) {
+                    tablero_principal[x][y] = new Reina(turno1);
+                }
+                if (tablero_principal[pieza_mover[0]][pieza_mover[1]] instanceof Rey) {
+                    tablero_principal[x][y] = new Rey(turno1);
+                }
+                //}
+
+                if (turno1) {
+                    mov1++;
+                } else {
+                    mov2++;
+                }
                 clic = !clic;
                 turno1 = !turno1;
                 boolean temp;//así guardo el tueno en el que estaba   
                 tablero_principal[pieza_mover[0]][pieza_mover[1]] = null;
                 colorear();
+                if (perdio) {
+                    JOptionPane.showMessageDialog(this, "Te has comido al rey\n"
+                            + "GANADOR: " + (turno1 ? jl_jugador1.getText() : jl_jugador2.getText()));
+                    JOptionPane.showMessageDialog(this, "Nos vemos a la próxima\n"
+                            + "AJEDREZ FUERA");
+                    System.exit(0);
+                }
                 //AQUI VAMOS A TRABAJAR AHORITA
                 pos = tablero_principal[x][y].movimiento(x, y, tablero_principal);
                 if (rey_blanco[0] < rey_negro[0]) {
                     temp = true;
-                }else if(rey_blanco[0] > rey_negro[0]){
+                } else if (rey_blanco[0] > rey_negro[0]) {
                     temp = false;
-                }else{
+                } else {
                     if (rey_blanco[1] < rey_negro[1]) {
                         temp = true;
-                    }else{
+                    } else {
                         temp = false;
                     }
                 }
-                
+
                 for (int i = 0; i < pos.length; i++) {
-                    for (int j = 0; j < pos[i].length; j+=2) {
+                    for (int j = 0; j < pos[i].length; j += 2) {
                         if (temp) {
-                            if (pos[i][j]==rey_negro[0] && pos[i][j+1]==rey_negro[1]) {
-                                    JOptionPane.showMessageDialog(this, "El rey de las piezas negras está en jaque");
-                                
+                            if (pos[i][j] == rey_negro[0] && pos[i][j + 1] == rey_negro[1]) {
+                                JOptionPane.showMessageDialog(this, "El rey de las piezas negras está en jaque");
+                                temp = !temp;
+
                             }
-                        }else{
-                            if (pos[i][j]==rey_blanco[0] && pos[i][j+1]==rey_blanco[1]) {
-                                    JOptionPane.showMessageDialog(this, "El rey de las piezas blancas está en jaque");
-                                
+                        } else {
+                            if (pos[i][j] == rey_blanco[0] && pos[i][j + 1] == rey_blanco[1]) {
+                                JOptionPane.showMessageDialog(this, "El rey de las piezas blancas está en jaque");
+                                temp = !temp;
+
                             }
                         }
                     }
                 }
-                
-            }else{
+
+            } else {
                 JOptionPane.showMessageDialog(this, "La pieza no se debe mover a esa posición\n"
                         + "Solo a los cuadros rellenos de verde");
             }
@@ -969,7 +1022,7 @@ public void botones() {
         boolean col = true;
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
-                if (i % 2 == 0) {
+                if (i % 2 != 0) {
                     if (col) {
                         tablero[i][j].setBackground(Color.YELLOW);
                         col = !col;
@@ -994,22 +1047,51 @@ public void botones() {
 
                 }
                 if (tablero_principal[i][j] instanceof Rey) {
-                    if (turno1) {
+                    if (tablero_principal[i][j].getColor()) {
                         rey_blanco[0] = i;
                         rey_blanco[1] = j;
-                    }else{
+                        System.out.println(Arrays.toString(rey_blanco) + "Blanco");
+                    } else {
                         rey_negro[0] = i;
                         rey_negro[1] = j;
+                        System.out.println(Arrays.toString(rey_negro) + "negro");
                     }
                 }
             }
-            System.out.println(Arrays.toString(rey_blanco));
-            System.out.println(Arrays.toString(rey_negro));
         }
 
         tf_jugador1.setText(mov1 + "");
         tf_jugador2.setText(mov2 + "");
+        Piezas[][] temp = new Piezas[8][8];
+        for (int i = 0; i < temp.length; i++) {
+            for (int j = 0; j < temp[0].length; j++) {
+                if (tablero_principal[i][j] != null) {
+                    temp[i][j] = tablero_principal[i][j];
+                }else{
+                    temp[i][j] = new Peon();
+                    ((Peon)temp[i][j]).setFigura("");
+                    
+                }
+            }
+        }
+        imprimeMatriz(temp, 0, 0);
+        System.out.println("");
+        
     }
+    public static void imprimeMatriz(Piezas matriz[][], int filas, int cols) {
+        if (filas == matriz.length - 1 && cols == matriz[0].length - 1) {
+            System.out.print( matriz[filas][cols].toString() +"   ");            
+        } else {
+            if (cols == matriz[0].length-1) {   
+                System.out.println( matriz[filas][cols].toString() ); 
+                imprimeMatriz(matriz, filas+1, 0);
+            } else {
+                System.out.print( matriz[filas][cols].toString() +"   "); 
+                imprimeMatriz(matriz, filas, cols+1);
+            }
+        }
+    }
+
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         principal(0, 0);
@@ -1272,9 +1354,11 @@ public void botones() {
 
     private void imagen_entradaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_imagen_entradaActionPerformed
         // TODO add your handling code here:
-        if (JOptionPane.showConfirmDialog(this, "¿Está seguro que desea salir") == 0) {
-            JOptionPane.showMessageDialog(this, "Nos Vemos");
-            System.exit(0);
+        if (JOptionPane.showConfirmDialog(this, "¿Está seguro que deseas reiniciar la partida?") == 0) {
+            jPanel1.setVisible(false);
+            JOptionPane.showMessageDialog(this, "Nueva Partida");
+            tablerito();
+            jPanel1.setVisible(true);
         } else {
             JOptionPane.showMessageDialog(this, "Seguí jugando");
         }
